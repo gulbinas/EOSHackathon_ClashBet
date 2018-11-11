@@ -28,12 +28,14 @@ CONTRACT clashbet : public eosio::contract {
                  contract( self, code, ds ),
                  _challangeIndex( self, self.value ) {}
 
-      ACTION createchall(name player, uint64_t amount);
+      ACTION createchall(name player, uint64_t amount, std::string challangeHash);
 
       ACTION claimprize(name player, std::string challangeHash);
 
       ACTION acceptloss(name player, std::string challangeHash);
 
       ACTION acceptchal(name player, std::string challangeHash);
+
+      ACTION stake(name from, name to, eosio::asset quantity, std::string memo);
 
 };
