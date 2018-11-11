@@ -2,21 +2,21 @@ import React, {Component} from 'react';
 import {Api, JsonRpc, RpcError, JsSignatureProvider} from 'eosjs'; // https://github.com/EOSIO/eosjs
 import {TextDecoder, TextEncoder} from 'text-encoding';
 import uuid from "uuid";
-import { Redirect } from 'react-router-dom';
+// import { Redirect } from 'react-router-dom';
 
 // material-ui dependencies
 import {withStyles} from '@material-ui/core/styles';
 // import AppBar from '@material-ui/core/AppBar';
 // import Toolbar from '@material-ui/core/Toolbar';
 // import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
+// import Typography from '@material-ui/core/Typography';
+// import Card from '@material-ui/core/Card';
+// import CardContent from '@material-ui/core/CardContent';
 // import Input from '@material-ui/core/Input';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
+// import InputLabel from '@material-ui/core/InputLabel';
 
 // import TextField from '@material-ui/core/TextField';
 // import Paper from '@material-ui/core/Paper';
@@ -41,6 +41,12 @@ const endpoint = "http://10.7.1.73:8888";
 // NEVER store private keys in any source code in your real life development
 // This is for demo purposes only!
 
+// const states = {
+//     "waiting": 10,
+//     "playing": 20,
+//     "pending": 25,
+//     "settling": 30
+// };
 
 // set up styling classes using material-ui "withStyles"
 
@@ -126,7 +132,7 @@ class Index extends Component {
         // this.handleFormEvent = this.handleFormEvent.bind(this);
         this.returnHome = this.returnHome.bind(this);
         this.createChallenge = this.createChallenge.bind(this);
-        this.acceptChallenge = this.acceptChallenge.bind(this);
+        // this.acceptChallenge = this.acceptChallenge.bind(this);
         this.cancelChallenge = this.cancelChallenge.bind(this);
         this.claimChallenge = this.claimChallenge.bind(this);
         this.acceptLoss = this.acceptLoss.bind(this);
@@ -134,7 +140,7 @@ class Index extends Component {
 
     // generic function to handle form events (e.g. "submit" / "reset")
     // push transactions to the blockchain by using eosjs
-    async acceptChallenge(event) {
+    async createChallenge(event) {
         // stop default behaviour
         event.preventDefault();
 
@@ -166,8 +172,10 @@ class Index extends Component {
         const rpc = new JsonRpc(endpoint);
         const signatureProvider = new JsSignatureProvider([privateKey]);
         const api = new Api({rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder()});
+
         try {
-            const result = await api.transact({
+
+            await api.transact({
                 actions: [{
                     account: "clashbet",
                     name: actionName,
@@ -182,10 +190,10 @@ class Index extends Component {
                 expireSeconds: 30,
             });
 
-            this.setState({ "status": 20 });
+            this.setState({ "status": 10 });
 
-            console.log(result);
-            this.getTable();
+            // console.log(result);
+            // this.getTable();
         } catch (e) {
             console.log('Caught exception: ' + e);
             if (e instanceof RpcError) {
@@ -220,11 +228,11 @@ class Index extends Component {
         this.setState({ "status": 0 });
     };
 
-    createChallenge = (event) => {
-        event.preventDefault();
-
-        this.setState({ "status": 20 });
-    };
+    // createChallenge = (event) => {
+    //     event.preventDefault();
+    //
+    //     this.setState({ "status": 20 });
+    // };
 
     // acceptChallenge = (event) => {
     //     event.preventDefault();
@@ -248,24 +256,24 @@ class Index extends Component {
     };
 
     render() {
-        const {noteTable} = this.state;
+        // const {noteTable} = this.state;
         const {classes} = this.props;
 
         // generate each note as a card
-        const generateCard = (key, user, note) => (
-            <Card className={classes.card} key={key}>
-                <CardContent>
-                    <Typography variant="headline" component="h2">
-                        {user}
-                    </Typography>
-                    <Typography component="pre">
-                        {note}
-                    </Typography>
-                </CardContent>
-            </Card>
-        );
-        let noteCards = noteTable.map((row, i) =>
-            generateCard(i, row.user, row.note));
+        // const generateCard = (key, user, note) => (
+        //     <Card className={classes.card} key={key}>
+        //         <CardContent>
+        //             <Typography variant="headline" component="h2">
+        //                 {user}
+        //             </Typography>
+        //             <Typography component="pre">
+        //                 {note}
+        //             </Typography>
+        //         </CardContent>
+        //     </Card>
+        // );
+        // let noteCards = noteTable.map((row, i) =>
+        //     generateCard(i, row.user, row.note));
 
 
 
@@ -337,7 +345,6 @@ class Index extends Component {
                         {footerContainer}
                     </div>
                 );
-                break;
             case 15:
                 return (
                     <div className="App">
@@ -350,7 +357,6 @@ class Index extends Component {
                         {footerContainer}
                     </div>
                 );
-                break;
             case 20:
                 return (
                     <div className="App">
@@ -359,14 +365,12 @@ class Index extends Component {
                                 <div className={classes.formContents}>
                                     In Progress
                                 </div>
-                                {/*<Button onClick={this.} variant="contained" color="primary">Challenge</Button>*/}
                                 {redirectButton}
                             </div>
                         </div>
                         {footerContainer}
                     </div>
                 );
-                break;
             case 30:
                 return (
                     <div className="App">
@@ -381,43 +385,35 @@ class Index extends Component {
                         {footerContainer}
                     </div>
                 );
-                break;
             default:
                 return (
                     <div className="App">
-                    <div className={classes.clash}>
-                        <form onSubmit={this.acceptChallenge} className={classes.mainCon}>
-                            <div className={classes.formContents}>
-                                <FormControl fullWidth>
-                                    <TextField
-                                        id="challenger"
-                                        label="Challenger ID"
-                                        value={this.state.challenge.challenger}
-                                        margin="normal"
-                                        variant="filled"
-                                        autoFocus
-                                    />
-                                </FormControl>
-                                <FormControl className={classes.formAmountInput}>
-                                    <TextField
-                                        id="amount"
-                                        label="Amount"
-                                        value={this.state.challenge.amount}
-                                        margin="normal"
-                                        variant="filled"
-                                    />
-                                </FormControl>
-                            </div>
-                            <Button type="submit" variant="contained" color="primary">Challenge</Button>
-                            <Button onClick={(e) => { e.preventDefault(); this.setState({'status': 10}) }} variant="contained" color="primary">Meh</Button>
-                        </form>
-
-                        <pre className={classes.pre} style={{"display":"none"}}>
-                        Below is a list of pre-created accounts information for add/update note:
-                        <br/><br/>
-                        accounts = {JSON.stringify(accounts, null, 2)}
-                        </pre>
-                    </div>
+                        <div className={classes.clash}>
+                            <form onSubmit={this.createChallenge} className={classes.mainCon}>
+                                <div className={classes.formContents}>
+                                    <FormControl fullWidth>
+                                        <TextField
+                                            id="challenger"
+                                            label="Challenger ID"
+                                            value={this.state.challenge.challenger}
+                                            margin="normal"
+                                            variant="filled"
+                                            autoFocus
+                                        />
+                                    </FormControl>
+                                    <FormControl className={classes.formAmountInput}>
+                                        <TextField
+                                            id="amount"
+                                            label="Amount"
+                                            value={this.state.challenge.amount}
+                                            margin="normal"
+                                            variant="filled"
+                                        />
+                                    </FormControl>
+                                </div>
+                                <Button type="submit" variant="contained" color="primary">Challenge</Button>
+                            </form>
+                        </div>
                         {footerContainer}
                     </div>
                 );
