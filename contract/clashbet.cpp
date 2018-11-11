@@ -21,4 +21,14 @@ void clashbet::createchall(account_name player, uint64_t amount, std::string cha
 
 };
 
-EOSIO_ABI( clashbet, (createchall))
+
+void clashbet::claimprize(account_name player, std::string challangeHash){
+
+};
+
+void clashbet::acceptloss(account_name player, std::string challangeHash){
+
+};
+
+
+EOSIO_ABI( clashbet, (createchall)(claimprize)(acceptloss))

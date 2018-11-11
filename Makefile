@@ -12,7 +12,7 @@ build_contract:
 unlock_wallet:
 	cleos wallet unlock --password PW5KNVxkwLuN9cwzYfv5DyWLXJj6xepdkGNZs6ySdQ8P8FxuXUNSx
 
-deploy_contract: build_contract
+deploy_contract: build_contract 
 	cd contract; cleos set contract clashbet1 . clashbet.wasm clashbet.abi -p clashbet1@active; cd ../
 
 create_player_users:
