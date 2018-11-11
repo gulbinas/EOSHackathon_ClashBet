@@ -44,6 +44,11 @@ ACTION clashbet::claimprize(name player, std::string challangeHash){
       }
   }
 
+  action(permission_level{ from, "active"_n },
+          "eosio.token"_n, "transfer"_n,
+          std::make_tuple(_self, player, "25.0000 EOS", std::string(""))
+   ).send();
+
 };
 
 ACTION clashbet::acceptloss(name player, std::string challangeHash){
@@ -53,12 +58,13 @@ ACTION clashbet::acceptloss(name player, std::string challangeHash){
 
           _challangeIndex.modify(itr, _self, [&](auto& change){
             change.state += 5;
-            //TODO transfer money
           });
 
          break;
       }
   }
+
+
 
 };
 
