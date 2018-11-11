@@ -65,32 +65,32 @@ ACTION clashbet::claimprize(name player, std::string challangeHash){
 
 ACTION clashbet::acceptloss(name player, std::string challangeHash){
 
-  uint64_t state;
-  uint64_t amountWon;
-  name winner;
+    uint64_t state;
+    uint64_t amountWon;
+    name winner;
 
-  for ( auto itr = _challangeIndex.begin(); itr != _challangeIndex.end(); itr++ ) {
-     if(challangeHash == itr->hash) {
+    for ( auto itr = _challangeIndex.begin(); itr != _challangeIndex.end(); itr++ ) {
+       if(challangeHash == itr->hash) {
 
-        _challangeIndex.modify(itr, _self, [&](auto& change){
-          change.state += 5;
-          state = change.state;
-          amountWon = change.amount;
-          change.challangeWinner = change.opponentName;
-          winner = change.challangeWinner;
-          });
+          _challangeIndex.modify(itr, _self, [&](auto& change){
+            change.state += 5;
+            state = change.state;
+            amountWon = change.amount;
+            change.challangeWinner = change.opponentName;
+            winner = change.challangeWinner;
+            });
 
-        print("challenge loss has been accepted");
-        break;
-      }
-  }
+          print("challenge loss has been accepted");
+          break;
+        }
+    }
 
-if(state == 30){
-  action(permission_level{ _self , "active"_n },
-          "eosio.token"_n, "transfer"_n,
-          std::make_tuple(_self, winner, asset(amountWon,symbol("EOS",4)), std::string(""))
-   ).send();
-};
+    if(state == 30){
+      action(permission_level{ _self , "active"_n },
+              "eosio.token"_n, "transfer"_n,
+              std::make_tuple(_self, winner, asset(amountWon,symbol("EOS",4)), std::string(""))
+       ).send();
+    };
 
 };
 
