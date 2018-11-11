@@ -193,7 +193,6 @@ class Jacob extends Component {
 
             this.getTable();
         } catch (e) {
-            console.log('Caught exception: ' + e);
             if (e instanceof RpcError) {
                 console.log(JSON.stringify(e.json, null, 2));
             }
