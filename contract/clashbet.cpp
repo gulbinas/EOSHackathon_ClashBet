@@ -4,7 +4,7 @@ using namespace eosio;
 
 void clashbet::createchall(account_name player, uint64_t amount, std::string challangeHash){ //FFR discuss hashing
 
-    c hallangeIndex challangeInit(_self,_self);
+    challangeIndex challangeInit(_self,_self);
 
     const char * c = challangeHash.c_str();
 

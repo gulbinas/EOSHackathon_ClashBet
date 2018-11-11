@@ -33,3 +33,6 @@
 
 # Dependency directories
 node_modules/
+
+*.wasm
+*.abi

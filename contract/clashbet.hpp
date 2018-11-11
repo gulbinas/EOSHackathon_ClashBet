@@ -10,5 +10,5 @@ class clashbet : public eosio::contract {
       using contract::contract;
 
       //@abi action
-      void createchall(account_name player, uint64_t amount, checksum256 challangeHash);
+      void createchall(account_name player, uint64_t amount, std::string challangeHash);
 };
