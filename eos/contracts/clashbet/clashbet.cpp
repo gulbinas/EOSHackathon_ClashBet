@@ -63,7 +63,7 @@ ACTION clashbet::acceptloss(name player, std::string challangeHash){
 
   uint64_t state;
   uint64_t amountWon;
-  account winner;
+  name winner;
 
   for ( auto itr = _challangeIndex.begin(); itr != _challangeIndex.end(); itr++ ) {
      if(challangeHash == itr->hash) {
