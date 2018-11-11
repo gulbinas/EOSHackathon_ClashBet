@@ -30,3 +30,6 @@
 *.exe
 *.out
 *.app
+
+# Dependency directories
+node_modules/

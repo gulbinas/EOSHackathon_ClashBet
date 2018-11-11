@@ -1,0 +1,9 @@
+{
+  "name": "ClashBet",
+  "version": "1.0.0",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "js-sha256": "^0.9.0",
+    "lodash": "^4.17.11"
+  }
+}
