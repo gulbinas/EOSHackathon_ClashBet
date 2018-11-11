@@ -6,14 +6,11 @@ serve:
 setup:
 	npm i
 
-build_contract:
-	cd contract; eosiocpp -o clashbet.wasm clashbet.cpp; eosiocpp -g clashbet.abi clashbet.cpp;  cd ../
+deploy_contract:
+	yarn contract:deploy clashbet clashbet
 
 unlock_wallet:
 	cleos wallet unlock --password PW5KNVxkwLuN9cwzYfv5DyWLXJj6xepdkGNZs6ySdQ8P8FxuXUNSx
-
-deploy_contract: build_contract 
-	cd contract; cleos set contract clashbet1 . clashbet.wasm clashbet.abi -p clashbet1@active; cd ../
 
 create_player_users:
 	cleos create account eosio clashbet EOS7jGCT5c2i9cY8LWQ6Q7SJrm76pBf74hBsGvMYNwNKkg4fFWGw4 EOS7jGCT5c2i9cY8LWQ6Q7SJrm76pBf74hBsGvMYNwNKkg4fFWGw4

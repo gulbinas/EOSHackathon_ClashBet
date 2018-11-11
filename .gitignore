@@ -1,38 +1,19 @@
-# Prerequisites
-*.d
+node_modules
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+# Blockchain nodes data
 
-# Precompiled Headers
-*.gch
-*.pch
+/eos/data
+/eos/wallets
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+keys.txt
 
-# Fortran module files
-*.mod
-*.smod
+# system
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
+.idea
+.DS_Store
 
-# Executables
-*.exe
-*.out
-*.app
-
-# Dependency directories
-node_modules/
-
+*.wast
 *.wasm
 *.abi
+
+.env
