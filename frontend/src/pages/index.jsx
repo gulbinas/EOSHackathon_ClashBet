@@ -41,12 +41,12 @@ const endpoint = "http://10.7.1.73:8888";
 // NEVER store private keys in any source code in your real life development
 // This is for demo purposes only!
 
-// const states = {
-//     "waiting": 10,
-//     "playing": 20,
-//     "pending": 25,
-//     "settling": 30
-// };
+const states = {
+    "waiting": 10,
+    "playing": 20,
+    "pending": 25,
+    "settling": 30
+};
 
 // set up styling classes using material-ui "withStyles"
 
@@ -112,6 +112,12 @@ const styles = theme => ({
         right: 0,
         left: 0,
         color: "#fff"
+    },
+    pageTitle: {
+        margin: 0,
+        textAlign: "center",
+        textTransform: "uppercase",
+        marginBottom: "5px"
     }
 });
 
@@ -124,8 +130,9 @@ class Index extends Component {
             status: 0,
             challenge: {
                 challenger: "Alice",
-                amount: 10
+                amount: 10,
             },
+            hash: null,
             noteTable: [] // to store the table rows from smart contract
         };
 
@@ -153,6 +160,8 @@ class Index extends Component {
         // prepare variables for the switch below to send transactions
         let actionName = "";
         let actionData = {};
+        let uid = uuid.v4();
+
 
         // define actionName and action according to event type
         switch (event.type) {
@@ -161,7 +170,7 @@ class Index extends Component {
                 actionData = {
                     player: account,
                     amount: amount,
-                    challangeHash: uuid.v4()
+                    challangeHash: uid
                 };
                 break;
             default:
@@ -190,7 +199,73 @@ class Index extends Component {
                 expireSeconds: 30,
             });
 
-            this.setState({ "status": 10 });
+            this.setState({ "status": 10, "hash": uid });
+
+            console.log(this.state);
+            // this.getTable();
+        } catch (e) {
+            console.log('Caught exception: ' + e);
+            if (e instanceof RpcError) {
+                console.log(JSON.stringify(e.json, null, 2));
+            }
+        }
+    }
+
+    async cancelChallenge(event) {
+        // stop default behaviour
+        event.preventDefault();
+
+        if (typeof this.state.hash === "undefined") {
+            this.setState({ "status": 0 })
+        }
+
+
+        // collect form data
+        // let account = event.target.account.value;
+        let account = accounts.challenger.name;
+        let privateKey = accounts.challenger.privateKey;
+        // let amount = event.target.amount.value;
+
+        // prepare variables for the switch below to send transactions
+        let actionName = "";
+        let actionData = {};
+
+        // define actionName and action according to event type
+        switch (event.type) {
+            case "submit":
+                actionName = "cancelchall";
+                actionData = {
+                    player: account,
+                    challangeHash: this.state.hash
+                };
+                break;
+            default:
+                return;
+        }
+
+        // eosjs function call: connect to the blockchain
+        const rpc = new JsonRpc(endpoint);
+        const signatureProvider = new JsSignatureProvider([privateKey]);
+        const api = new Api({rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder()});
+
+        try {
+
+            await api.transact({
+                actions: [{
+                    account: "clashbet",
+                    name: actionName,
+                    authorization: [{
+                        actor: account,
+                        permission: 'active',
+                    }],
+                    data: actionData,
+                }]
+            }, {
+                blocksBehind: 3,
+                expireSeconds: 30,
+            });
+
+            this.setState({ "status": 0 });
 
             // console.log(result);
             // this.getTable();
@@ -201,6 +276,8 @@ class Index extends Component {
             }
         }
     }
+
+
 
     // gets table data from the blockchain
     // and saves it into the component state: "noteTable"
@@ -213,12 +290,19 @@ class Index extends Component {
             "scope": "clashbet",  // scope of the table
             "table": "challange",    // name of the table as specified by the contract abi
             "limit": 100,
-        }).then(result => this.setState({ noteTable: result.rows }));
+        }).then(result => {
+            for(let i = 0; i < result.rows.length; i++) {
+                if (result.rows[i].hash === this.state.hash && result.rows[i].state === 20) {
+                    this.setState({ status: 20 });
+
+                    break;
+                }
+            }
+        });
 
     }
 
     componentDidMount() {
-        console.log();
        // this.getTable();
     }
 
@@ -240,11 +324,11 @@ class Index extends Component {
     //     this.setState({ "status": 20 });
     // };
 
-    cancelChallenge = (event) => {
-        event.preventDefault();
-
-        this.setState({ "status": 0 });
-    };
+    // cancelChallenge = (event) => {
+    //     event.preventDefault();
+    //
+    //     this.setState({ "status": 0 });
+    // };
 
     claimChallenge = (event) => {
         event.preventDefault();
@@ -329,12 +413,19 @@ class Index extends Component {
 
         switch (this.state.status) {
             case 10:
+
+                for (let i = 1; i < 9; i++) {
+                    setTimeout(() => {
+                        this.getTable();
+                    }, 2000*i)
+                }
+
                 return (
                     <div className="App">
                         <div className={classes.clash}>
                             <div className={classes.mainCon}>
                                 <div className={classes.formContents}>
-                                    Waiting
+                                    <h2 className={classes.pageTitle}>Waiting for players</h2>
                                 </div>
                                 <div className={classes.formFooter}>
                                     <Button onClick={this.cancelChallenge} variant="contained" color="primary">Cancel challenge</Button>
@@ -397,7 +488,6 @@ class Index extends Component {
                                             label="Challenger ID"
                                             value={this.state.challenge.challenger}
                                             margin="normal"
-                                            variant="filled"
                                             autoFocus
                                         />
                                     </FormControl>
@@ -407,7 +497,6 @@ class Index extends Component {
                                             label="Amount"
                                             value={this.state.challenge.amount}
                                             margin="normal"
-                                            variant="filled"
                                         />
                                     </FormControl>
                                 </div>
