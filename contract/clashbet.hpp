@@ -18,4 +18,7 @@ class clashbet : public eosio::contract {
       //@abi action
       void acceptloss(account_name player, std::string challangeHash);
 
+      //@abi action
+      void acceptchal(account_name player, std::string challangeHash);
+
 };
