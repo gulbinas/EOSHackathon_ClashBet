@@ -23,14 +23,32 @@ ACTION clashbet::acceptchal(name player, std::string challangeHash){
   // auto hashInNumber = eosio::string_to_name(c);
 
   // auto itr = _challangeIndex.find(challangeHash);
-  auto itr = _challangeIndex.find(1);
 
-  _challangeIndex.modify(itr,_self,[&](auto change){
+  for ( auto itr = _challangeIndex.begin(); itr != _challangeIndex.end(); itr++ ) {
+     // if(challangeHash == itr->hash) {
+          auto item = _challangeIndex.find(itr->key);
+          // eosio_assert(item != _challangeIndex.end(), "item not found");
 
-    change.state = 20;
-    change.opponentName = player;
+          _challangeIndex.modify(itr, _self, [&](auto change){
+            print(item->key);
+            change.state = 20;
+            change.opponentName = player;
+            print(change.state);
+            print(change.opponentName);
+          });
 
-  });
+          // _challangeIndex.update(itr, _self, [&](auto change){
+          //   print(item->key);
+          //   change.state = 20;
+          //   change.opponentName = player;
+          //   print(change.state);
+          //   print(change.opponentName);
+          // });
+
+        //  break;
+      //}
+  }
+
 
 };
 
@@ -79,7 +97,7 @@ ACTION clashbet::stake(name from, name to, eosio::asset quantity, std::string me
 
 extern "C" {
   void apply(uint64_t receiver, uint64_t code, uint64_t action) {
-    clashbet _clashbet(receiver);
+    // clashbet _clashbet(receiver);
     if(code==receiver && action== name("createchall").value) {
       execute_action(name(receiver), name(code), &clashbet::createchall );
     }
