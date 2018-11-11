@@ -44,7 +44,7 @@ ACTION clashbet::claimprize(name player, std::string challangeHash){
       }
   }
 
-  action(permission_level{ from, "active"_n },
+  action(permission_level{ _self, "active"_n },
           "eosio.token"_n, "transfer"_n,
           std::make_tuple(_self, player, "25.0000 EOS", std::string(""))
    ).send();
@@ -79,7 +79,7 @@ ACTION clashbet::cancelchall(name player, std::string challangeHash){
   for ( auto itr = _challangeIndex.begin(); itr != _challangeIndex.end(); itr++ ) {
      if(challangeHash == itr->hash) {
 
-          _challangeIndex.erase(itr)
+          _challangeIndex.erase(itr);
 
          break;
       }

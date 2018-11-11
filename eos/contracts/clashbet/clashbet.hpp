@@ -39,4 +39,6 @@ CONTRACT clashbet : public eosio::contract {
 
       ACTION stake(name from, name to, eosio::asset quantity, std::string memo);
 
+      ACTION cancelchall(name player, std::string challangeHash);
+
 };
