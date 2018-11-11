@@ -82,7 +82,7 @@ ACTION clashbet::cancelchall(name player, std::string challangeHash){
   for ( auto itr = _challangeIndex.begin(); itr != _challangeIndex.end(); itr++ ) {
      if(challangeHash == itr->hash) {
 
-          _challangeIndex.erase(itr)
+          _challangeIndex.erase(itr);
 
          break;
       }
