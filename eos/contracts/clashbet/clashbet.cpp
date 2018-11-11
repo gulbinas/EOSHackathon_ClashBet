@@ -4,6 +4,7 @@ using namespace eosio;
 
 ACTION clashbet::createchall(name player, uint64_t amount, std::string challangeHash){ //FFR discuss hashing
 
+    print("challenge has been created");
     _challangeIndex.emplace(_self,[&](auto &adder){ //TODO add primary key and etc
       adder.key = _challangeIndex.available_primary_key();
       adder.hash = challangeHash; // name(challangeHash);
@@ -23,6 +24,7 @@ ACTION clashbet::acceptchal(name player, std::string challangeHash){
             change.state = 20;
             change.opponentName = player;
           });
+          print("challenge has been accepted");
 
          break;
       }
@@ -45,7 +47,9 @@ ACTION clashbet::claimprize(name player, std::string challangeHash){
             state = change.state;
           });
 
-         break;
+          print("challenge prize has been claimed");
+
+          break;
       }
   }
 
@@ -68,15 +72,16 @@ ACTION clashbet::acceptloss(name player, std::string challangeHash){
   for ( auto itr = _challangeIndex.begin(); itr != _challangeIndex.end(); itr++ ) {
      if(challangeHash == itr->hash) {
 
-          _challangeIndex.modify(itr, _self, [&](auto& change){
-            change.state += 5;
-            state = change.state;
-            amountWon = change.amount;
-            change.challangeWinner = change.opponentName;
-            winner = change.challangeWinner;
-            });
+        _challangeIndex.modify(itr, _self, [&](auto& change){
+          change.state += 5;
+          state = change.state;
+          amountWon = change.amount;
+          change.challangeWinner = change.opponentName;
+          winner = change.challangeWinner;
+          });
 
-         break;
+        print("challenge loss has been accepted");
+        break;
       }
   }
 
