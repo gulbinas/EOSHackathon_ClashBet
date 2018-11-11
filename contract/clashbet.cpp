@@ -21,14 +21,61 @@ void clashbet::createchall(account_name player, uint64_t amount, std::string cha
 
 };
 
+void clashbet::acceptchal(account_name player, std::string challangeHash){
+
+  challangeIndex challangeAccept(_self,_self);
+
+  const char * c = challangeHash.c_str();
+
+  auto hashInNumber = eosio::string_to_name(c);
+
+  auto itr = challangeAccept.find(hashInNumber);
+
+  challangeAccept.modify(itr,_self,[&](auto change){
+
+    change.state = 20;
+    change.opponentName = player;
+
+  });
+
+};
 
 void clashbet::claimprize(account_name player, std::string challangeHash){
+
+  challangeIndex challangeAccept(_self,_self);
+
+  const char * c = challangeHash.c_str();
+
+  auto hashInNumber = eosio::string_to_name(c);
+
+  auto itr = challangeAccept.find(hashInNumber);
+
+  challangeAccept.modify(itr,_self,[&](auto change){
+
+    change.state += 5;
+    change.challangeWinner = player;
+
+  });
 
 };
 
 void clashbet::acceptloss(account_name player, std::string challangeHash){
 
+  challangeIndex challangeAccept(_self,_self);
+
+  const char * c = challangeHash.c_str();
+
+  auto hashInNumber = eosio::string_to_name(c);
+
+  auto itr = challangeAccept.find(hashInNumber);
+
+  challangeAccept.modify(itr,_self,[&](auto change){
+
+      change.state += 5;
+    
+  });
+
 };
 
 
-EOSIO_ABI( clashbet, (createchall)(claimprize)(acceptloss))
+EOSIO_ABI( clashbet, (createchall)(acceptchal)(claimprize)(acceptloss))
