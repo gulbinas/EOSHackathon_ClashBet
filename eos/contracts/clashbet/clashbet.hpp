@@ -28,7 +28,7 @@ CONTRACT clashbet : public eosio::contract {
                  contract( self, code, ds ),
                  _challangeIndex( self, self.value ) {}
 
-      ACTION createchall(name player, uint64_t amount, std::string challangeHash);
+      ACTION createchall(name player, uint64_t amount);
 
       ACTION claimprize(name player, std::string challangeHash);
 

@@ -4,21 +4,14 @@ using namespace eosio;
 
 ACTION clashbet::createchall(name player, uint64_t amount, std::string challangeHash){ //FFR discuss hashing
 
-    // challangeIndex challangeInit(_self, _self.value);
-
-    // const char * c = challangeHash.c_str();
-
-    // auto hashInNumber = eosio::string_to_name(c);
-
     _challangeIndex.emplace(_self,[&](auto &adder){ //TODO add primary key and etc
-      adder.challangerId = _challangeIndex.available_primary_key();
+      adder.challangerId = "challangeHash"_n;
       adder.challangerName = player;
       adder.hash = challangeHash;
       adder.amount = amount;
       adder.state = 10;
       adder.gameId = 1;
     });
-
 };
 
 ACTION clashbet::acceptchal(name player, std::string challangeHash){
