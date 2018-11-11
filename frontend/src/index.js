@@ -1,5 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Index from './pages/index';
+import {Route, Link, BrowserRouter as Router} from 'react-router-dom';
 
-ReactDOM.render(<Index />, document.getElementById('root'));
+import Index from './pages/index';
+import Jacob from './pages/jacob';
+
+const routing = (
+    <Router>
+        <div className="App">
+            <Route exact path="/" component={Index} />
+            <Route path="/jacob" component={Jacob} />
+        </div>
+    </Router>
+);
+
+ReactDOM.render(routing, document.getElementById('root'));
