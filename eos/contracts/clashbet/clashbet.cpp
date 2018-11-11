@@ -68,6 +68,19 @@ ACTION clashbet::stake(name from, name to, eosio::asset quantity, std::string me
 
 };
 
+ACTION clashbet::cancelchall(name player, std::string challangeHash){
+
+  for ( auto itr = _challangeIndex.begin(); itr != _challangeIndex.end(); itr++ ) {
+     if(challangeHash == itr->hash) {
+
+          _challangeIndex.erase(itr)
+
+         break;
+      }
+  }
+
+}
+
 extern "C" {
   void apply(uint64_t receiver, uint64_t code, uint64_t action) {
     // clashbet _clashbet(receiver);
