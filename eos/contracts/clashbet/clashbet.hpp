@@ -8,7 +8,7 @@ CONTRACT clashbet : public eosio::contract {
 
       TABLE challange{
 
-        uint64_t challangerId;
+        uint64_t key;
         name challangerName;
         std::string hash;
         uint64_t amount;
@@ -17,7 +17,7 @@ CONTRACT clashbet : public eosio::contract {
         uint64_t gameId;
         name challangeWinner;
 
-        uint64_t primary_key() const { return challangerId; }
+        uint64_t primary_key() const { return key; }
 
       };
 
@@ -28,7 +28,7 @@ CONTRACT clashbet : public eosio::contract {
                  contract( self, code, ds ),
                  _challangeIndex( self, self.value ) {}
 
-      ACTION createchall(name player, uint64_t amount);
+      ACTION createchall(name player, uint64_t amount, std::string challangeHash);
 
       ACTION claimprize(name player, std::string challangeHash);
 

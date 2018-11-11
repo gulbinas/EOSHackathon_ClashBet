@@ -21,4 +21,5 @@ CONTRACTPATH="/opt/eosio/bin/contracts"
 eosio-cpp -abigen "$CONTRACTPATH/$1/$1.cpp" -o "$CONTRACTPATH/$1/$1.wasm" --contract "$1"
 
 # set (deploy) compiled contract to blockchain
+echo $2
 cleos set contract $2 "$CONTRACTPATH/$1/" --permission $2

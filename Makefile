@@ -21,4 +21,4 @@ show_table_content:
 	cleos get table clashbet clashbet challange
 
 do_createchall:
-	cleos push action clashbet createchall '["playerone",1,0x0]' -p clashbet
+	cleos push action clashbet createchall '["playerone",1,0x0]' -p clashbet@active
