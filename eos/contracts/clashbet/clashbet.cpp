@@ -71,5 +71,29 @@ ACTION clashbet::acceptloss(name player, std::string challangeHash){
 
 };
 
+ACTION clashbet::stake(name from, name to, eosio::asset quantity, std::string memo){ //Endpoint for staking
 
-EOSIO_DISPATCH( clashbet, (createchall)(acceptchal)(claimprize)(acceptloss))
+  if(to != _self || from == _self) return;
+
+};
+
+extern "C" {
+  void apply(uint64_t receiver, uint64_t code, uint64_t action) {
+    clashbet _clashbet(receiver);
+    if(code==receiver && action== name("createchall").value) {
+      execute_action(name(receiver), name(code), &clashbet::createchall );
+    }
+    else if(code==name("eosio.token").value && action== name("transfer").value) {
+      execute_action(name(receiver), name(code), &clashbet::stake );
+    }
+    else if(code==receiver && action== name("acceptchal").value) {
+      execute_action(name(receiver), name(code), &clashbet::acceptchal );
+    }
+    else if(code==receiver && action== name("claimprize").value) {
+      execute_action(name(receiver), name(code), &clashbet::claimprize );
+    }
+    else if(code==receiver && action== name("acceptloss").value) {
+      execute_action(name(receiver), name(code), &clashbet::acceptloss );
+    }
+  }
+};
