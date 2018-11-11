@@ -32,38 +32,33 @@ ACTION clashbet::acceptchal(name player, std::string challangeHash){
 
 ACTION clashbet::claimprize(name player, std::string challangeHash){
 
-  // challangeIndex challangeAccept(_self,_self.value);
+  for ( auto itr = _challangeIndex.begin(); itr != _challangeIndex.end(); itr++ ) {
+     if(challangeHash == itr->hash) {
 
-  // const char * c = challangeHash.c_str();
+          _challangeIndex.modify(itr, _self, [&](auto& change){
+            change.state += 5;
+            change.challangeWinner = player;
+          });
 
-  // auto hashInNumber = eosio::string_to_name(c);
-
-  auto itr = _challangeIndex.find(1);
-
-  _challangeIndex.modify(itr,_self,[&](auto change){
-
-    change.state += 5;
-    change.challangeWinner = player;
-
-  });
+         break;
+      }
+  }
 
 };
 
 ACTION clashbet::acceptloss(name player, std::string challangeHash){
 
-  // challangeIndex challangeAccept(_self,_self.value);
-  //
-  // const char * c = challangeHash.c_str();
-  //
-  // auto hashInNumber = eosio::string_to_name(c);
+  for ( auto itr = _challangeIndex.begin(); itr != _challangeIndex.end(); itr++ ) {
+     if(challangeHash == itr->hash) {
 
-  auto itr = _challangeIndex.find(1);
+          _challangeIndex.modify(itr, _self, [&](auto& change){
+            change.state += 5;
+            //TODO transfer money
+          });
 
-  _challangeIndex.modify(itr,_self,[&](auto change){
-
-      change.state += 5;
-
-  });
+         break;
+      }
+  }
 
 };
 
