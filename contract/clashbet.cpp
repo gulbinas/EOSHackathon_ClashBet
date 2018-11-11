@@ -2,12 +2,17 @@
 
 using namespace eosio;
 
-void clashbet::createchall(account_name player, uint64_t amount, checksum256 challangeHash){ //FFR discuss hashing
+void clashbet::createchall(account_name player, uint64_t amount, std::string challangeHash){ //FFR discuss hashing
 
-    challangeIndex challangeInit(_self,_self);
+    c hallangeIndex challangeInit(_self,_self);
 
-    challangeInit.emplace(_self,[&](auto &adder){
-      adder.challangerId = player;
+    const char * c = challangeHash.c_str();
+
+    auto hashInNumber = eosio::string_to_name(c);
+
+    challangeInit.emplace(_self,[&](auto &adder){ //TODO add primary key and etc
+      adder.challangerId = hashInNumber;
+      adder.challangerName = player;
       adder.hash = challangeHash;
       adder.amount = amount;
       adder.state = 10;
