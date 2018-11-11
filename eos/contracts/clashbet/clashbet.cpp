@@ -63,6 +63,7 @@ ACTION clashbet::acceptloss(name player, std::string challangeHash){
 
   uint64_t state;
   uint64_t amountWon;
+  account winner;
 
   for ( auto itr = _challangeIndex.begin(); itr != _challangeIndex.end(); itr++ ) {
      if(challangeHash == itr->hash) {
@@ -71,7 +72,9 @@ ACTION clashbet::acceptloss(name player, std::string challangeHash){
             change.state += 5;
             state = change.state;
             amountWon = change.amount;
-          });
+            change.challangeWinner = change.opponentName;
+            winner = change.challangeWinner;
+            });
 
          break;
       }
@@ -80,7 +83,7 @@ ACTION clashbet::acceptloss(name player, std::string challangeHash){
 if(state == 30){
   action(permission_level{ _self , "active"_n },
           "eosio.token"_n, "transfer"_n,
-          std::make_tuple(_self, player, asset(amountWon,symbol("EOS",4)), std::string(""))
+          std::make_tuple(_self, winner, asset(amountWon,symbol("EOS",4)), std::string(""))
    ).send();
 };
 
