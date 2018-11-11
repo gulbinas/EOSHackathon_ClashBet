@@ -96,6 +96,12 @@ const styles = theme => ({
         display: 'flex',
         marginBottom: "10px"
     },
+    formContentsBetween: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        marginTop: '5px',
+        marginBottom: '10px',
+    },
     formFooter: {
         display: 'flex',
         justifyContent: 'space-between'
@@ -136,13 +142,11 @@ class Index extends Component {
             noteTable: [] // to store the table rows from smart contract
         };
 
-        // this.handleFormEvent = this.handleFormEvent.bind(this);
         this.returnHome = this.returnHome.bind(this);
         this.createChallenge = this.createChallenge.bind(this);
-        // this.acceptChallenge = this.acceptChallenge.bind(this);
         this.cancelChallenge = this.cancelChallenge.bind(this);
-        this.claimChallenge = this.claimChallenge.bind(this);
         this.acceptLoss = this.acceptLoss.bind(this);
+        this.claimVictory = this.claimVictory.bind(this);
     }
 
     // generic function to handle form events (e.g. "submit" / "reset")
@@ -201,7 +205,6 @@ class Index extends Component {
 
             this.setState({ "status": 10, "hash": uid });
 
-            console.log(this.state);
             // this.getTable();
         } catch (e) {
             console.log('Caught exception: ' + e);
@@ -294,8 +297,6 @@ class Index extends Component {
             for(let i = 0; i < result.rows.length; i++) {
                 if (result.rows[i].hash === this.state.hash && result.rows[i].state === 20) {
                     this.setState({ status: 20 });
-
-                    break;
                 }
             }
         });
@@ -330,13 +331,104 @@ class Index extends Component {
     //     this.setState({ "status": 0 });
     // };
 
-    claimChallenge = (event) => {
+    async claimVictory(event) {
         event.preventDefault();
 
+        // collect form data
+        // let account = event.target.account.value;
+        let account = accounts.challenger.name;
+        let privateKey = accounts.challenger.privateKey;
+        // let amount = event.target.amount.value;
+
+        // prepare variables for the switch below to send transactions
+        let actionName = "claimprize";
+        let actionData = {
+            player: account,
+            challangeHash: this.state.hash
+        };
+
+        // eosjs function call: connect to the blockchain
+        const rpc = new JsonRpc(endpoint);
+        const signatureProvider = new JsSignatureProvider([privateKey]);
+        const api = new Api({rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder()});
+
+        try {
+
+            await api.transact({
+                actions: [{
+                    account: "clashbet",
+                    name: actionName,
+                    authorization: [{
+                        actor: account,
+                        permission: 'active',
+                    }],
+                    data: actionData,
+                }]
+            }, {
+                blocksBehind: 3,
+                expireSeconds: 30,
+            });
+
+            this.setState({ "status": 0, "hash": null });
+
+            // console.log(result);
+            // this.getTable();
+        } catch (e) {
+            console.log('Caught exception: ' + e);
+            if (e instanceof RpcError) {
+                console.log(JSON.stringify(e.json, null, 2));
+            }
+        }
     };
 
-    acceptLoss = (event) => {
+    async acceptLoss(event) {
         event.preventDefault();
+
+        // collect form data
+        // let account = event.target.account.value;
+        let account = accounts.challenger.name;
+        let privateKey = accounts.challenger.privateKey;
+        // let amount = event.target.amount.value;
+
+        // prepare variables for the switch below to send transactions
+        let actionName = "acceptloss";
+        let actionData = {
+            player: account,
+            challangeHash: this.state.hash
+        };
+
+        // eosjs function call: connect to the blockchain
+        const rpc = new JsonRpc(endpoint);
+        const signatureProvider = new JsSignatureProvider([privateKey]);
+        const api = new Api({rpc, signatureProvider, textDecoder: new TextDecoder(), textEncoder: new TextEncoder()});
+
+        try {
+
+            await api.transact({
+                actions: [{
+                    account: "clashbet",
+                    name: actionName,
+                    authorization: [{
+                        actor: account,
+                        permission: 'active',
+                    }],
+                    data: actionData,
+                }]
+            }, {
+                blocksBehind: 3,
+                expireSeconds: 30,
+            });
+
+            this.setState({ "status": 0, "hash": null });
+
+            // console.log(result);
+            // this.getTable();
+        } catch (e) {
+            console.log('Caught exception: ' + e);
+            if (e instanceof RpcError) {
+                console.log(JSON.stringify(e.json, null, 2));
+            }
+        }
     };
 
     render() {
@@ -414,10 +506,12 @@ class Index extends Component {
         switch (this.state.status) {
             case 10:
 
-                for (let i = 1; i < 9; i++) {
-                    setTimeout(() => {
-                        this.getTable();
-                    }, 2000*i)
+                for (let i = 1; i < 30; i++) {
+                    if (this.state.status === 10) {
+                        setTimeout(() => {
+                            this.getTable();
+                        }, 2000*i)
+                    }
                 }
 
                 return (
@@ -453,8 +547,9 @@ class Index extends Component {
                     <div className="App">
                         <div className={classes.clash}>
                             <div className={classes.mainCon}>
-                                <div className={classes.formContents}>
-                                    In Progress
+                                <div className={[classes.formContents, classes.formContentsBetween]}>
+                                    <Button variant="contained" color="primary" onClick={this.claimVictory}>Claim victory</Button>
+                                    <Button variant="contained" color="secondary" onClick={this.acceptLoss}>Accept loss</Button>
                                 </div>
                                 {redirectButton}
                             </div>
